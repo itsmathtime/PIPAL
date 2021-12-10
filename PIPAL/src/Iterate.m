@@ -153,6 +153,11 @@ classdef Iterate < handle
         z.err = 1; z.f = NaN; z.cE = NaN*ones(i.nE,1); z.cI = NaN*ones(i.nI,1); z.fu = NaN; z.cEu = NaN*ones(i.nE,1); z.cIu = NaN*ones(i.nI,1); return;
         
       end
+
+      if isnan(z.f) || any(isnan(c_orig))
+        % Set evaluation flag, default values, and return
+        z.err = 1; z.f = NaN; z.cE = NaN*ones(i.nE,1); z.cI = NaN*ones(i.nI,1); z.fu = NaN; z.cEu = NaN*ones(i.nE,1); z.cIu = NaN*ones(i.nI,1); return;
+      end
       
       % Set equality constraint values
       if i.nE > 0, z.cE = c_orig(i.I6) - i.b6; end;
@@ -206,6 +211,11 @@ classdef Iterate < handle
         % Set evaluation flag, default values, and return
         z.err = 1; z.g = sparse(i.nV,1); z.JE = sparse(i.nE,i.nV); z.JI = sparse(i.nI,i.nV); return;
         
+      end
+
+      if any(isnan(g_orig)) || any(isnan(J_orig), 'all')
+        % Set evaluation flag, default values, and return
+        z.err = 1; z.g = sparse(i.nV,1); z.JE = sparse(i.nE,i.nV); z.JI = sparse(i.nI,i.nV); return;
       end
       
       % Set objective gradient
@@ -261,6 +271,11 @@ classdef Iterate < handle
         % Set evaluation flag, default values, and return
         z.err = 1; z.H = sparse(i.nV,i.nV); return;
         
+      end
+
+      if any(isnan(H_orig), 'all')
+        % Set evaluation flag, default values, and return
+        z.err = 1; z.H = sparse(i.nV,i.nV); return;
       end
       
       % Set Hessian of the Lagrangian
